@@ -92,7 +92,7 @@ object BusService {
                             routeStations.add(first)
                             return
                         }
-                        routeStations.add(first)
+                       // routeStations.add(first)
                         val intermediatePoints = currentEdges.coords.map { point -> StationOnMap("", 0, point.lat, point.lon) }
                         routeStations.addAll(intermediatePoints)
                     }

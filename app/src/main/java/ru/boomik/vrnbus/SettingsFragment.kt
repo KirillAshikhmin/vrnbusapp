@@ -8,12 +8,17 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ru.boomik.vrnbus.dal.DataServices
 import ru.boomik.vrnbus.dialogs.alertQuestion
 import ru.boomik.vrnbus.managers.AnalyticsManager
 import ru.boomik.vrnbus.managers.SettingsManager
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
-    override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
+    override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
         if (preference==null) return false
 
         if (preference.key == Consts.SETTINGS_ANALYTICS && newValue is Boolean && newValue) {
@@ -41,7 +46,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         return true
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView = inflater.inflate(R.layout.fragment_container, container, false)
         val fragmentContainer = rootView.findViewById<FrameLayout>(R.id.container)
         val view = super.onCreateView(inflater, null, savedInstanceState)
@@ -94,8 +99,14 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun clearCache() {
-        activity?.finish()
-        context?.startActivity( Intent(context, MapsActivity::class.java))
+
+        MainScope().launch(Dispatchers.IO) {
+            DataServices.clear()
+            withContext(Dispatchers.Main) {
+                activity?.finish()
+                context?.startActivity( Intent(context, MapsActivity::class.java))
+            }
+        }
     }
 
 }

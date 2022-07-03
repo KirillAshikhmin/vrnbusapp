@@ -208,9 +208,9 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
         })
 
 
-
-        if (initPosition != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initPosition, initZoom))
+        val initPos = initPosition
+        if (initPos != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initPos, initZoom))
             checkZoom()
         } else if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
@@ -305,7 +305,7 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
         if (neededType == 0) size /= 2
 
 
-        val newBusesMarkers = buses.map {
+        val newBusesMarkers = buses.mapNotNull {
             var typeIcon = when (it.bus.busType) {
                 BusObject.BusType.Small -> small
                 BusObject.BusType.Medium -> medium
@@ -381,7 +381,7 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
             }
 
             val marker = mMap.addMarker(options)
-            marker.tag = it
+            marker?.tag = it
             marker
         }
 
@@ -407,9 +407,9 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
         stationVisibleSmall = showSmall
 
 
-        val newStationSmallMarkers = stationsOnMap.map {
+        val newStationSmallMarkers = stationsOnMap.mapNotNull {
             val marker = mMap.addMarker(MarkerOptions().position(it.getPosition()).title(it.getTitle()).icon(iconSmall).zIndex(0.8f).anchor(.5f, .5f).visible(showSmall))
-            marker.tag = it
+            marker?.tag = it
             marker
         }
 
@@ -467,9 +467,9 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
             mFavoriteStationMarkers.forEach { it.remove() }
             mFavoriteStationMarkers.clear()
             val icon: BitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_station_favorite)
-            val favoritesMarkers = mAllStations.filter { favoriteStations!!.contains(it.id) }.map {
+            val favoritesMarkers = mAllStations.filter { favoriteStations!!.contains(it.id) }.mapNotNull {
                 val marker = mMap.addMarker(MarkerOptions().position(it.getPosition()).title(it.getTitle()).icon(icon).zIndex(1.0f).anchor(.5f, .5f))
-                marker.tag = it
+                marker?.tag = it
                 marker
             }.toMutableList()
 
@@ -518,7 +518,10 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
             if (line1 != null) lines.add(mMap.addPolyline(line1))
             if (lines.isNotEmpty()) mRoutesOnMap = lines.toList()
             mRouteOnMap = route.name
-        } else mRoutesOnMap = listOf(mMap.addPolyline(getRoute(route.stations, R.color.route)))
+        } else {
+            val oneRoute = getRoute(route.stations, R.color.route)
+            mRoutesOnMap =  if (oneRoute!=null) listOf(mMap.addPolyline(oneRoute)) else null
+        }
 
     }
 

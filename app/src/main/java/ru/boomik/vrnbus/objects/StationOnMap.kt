@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import ru.boomik.vrnbus.dto.StationDto
 
 
-class StationOnMap(val name: String, val id: Int, var lat: Double, var lon: Double) {
+data class StationOnMap(val name: String, val id: Int, var lat: Double, var lon: Double) {
 
 
     fun getSnippet(): String? {

@@ -61,6 +61,8 @@ class BusObject {
     var projectId: Int = 0
     var carBrandId: Int = 0
     var nextStationName: String? = null
+    var bortName: String? = null
+    var hasConditioning: Boolean = false
 
     var localServerTimeDifference: Long = 0
 

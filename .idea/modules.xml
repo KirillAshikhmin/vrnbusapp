@@ -4,7 +4,13 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/vrnbusapp.iml" filepath="$PROJECT_DIR$/.idea/vrnbusapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.iml" filepath="$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.main.iml" filepath="$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/vrnbusapp.app.unitTest.iml" />
     </modules>
   </component>
 </project>

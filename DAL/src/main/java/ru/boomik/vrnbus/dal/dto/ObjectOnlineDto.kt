@@ -74,6 +74,14 @@ public class ObjectOnlineDto {
     @SerializedName("lowfloor")
     val lowfloor: Boolean = false
 
+    @SerializedName("bortName")
+    var bortName: String? = null
+
+    @SerializedName("isTrolleybus")
+    var isTrolleybus: Boolean = false
+
+    @SerializedName("hasConditioning")
+    var hasConditioning: Boolean = false
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -95,7 +103,9 @@ public class ObjectOnlineDto {
                 azimuth == objectOnlineDto.azimuth &&
                 carTypeId == objectOnlineDto.carTypeId &&
                 routeName == objectOnlineDto.routeName &&
-                lowfloor == objectOnlineDto.lowfloor
+                lowfloor == objectOnlineDto.lowfloor &&
+                isTrolleybus == objectOnlineDto.isTrolleybus &&
+                bortName == objectOnlineDto.bortName
     }
 
     override fun hashCode(): Int {
@@ -118,6 +128,8 @@ public class ObjectOnlineDto {
         sb.append("    carTypeId: ").append(toIndentedString(carTypeId)).append("\n")
         sb.append("    azimuth: ").append(toIndentedString(azimuth)).append("\n")
         sb.append("    lowfloor: ").append(toIndentedString(lowfloor)).append("\n")
+        sb.append("    bortName: ").append(toIndentedString(bortName)).append("\n")
+        sb.append("    isTrolleybus: ").append(toIndentedString(isTrolleybus)).append("\n")
         sb.append("}")
         return sb.toString()
     }

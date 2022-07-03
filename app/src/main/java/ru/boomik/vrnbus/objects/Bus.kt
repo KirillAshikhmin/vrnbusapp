@@ -21,7 +21,7 @@ enum class BusType {
 }
 
 class Bus {
-    var bus : BusObject = BusObject()
+    var bus: BusObject = BusObject()
     var timeLeft: Double = Double.MAX_VALUE
     var distance: Double = .0
     var timeDifference: Long = 0
@@ -49,6 +49,12 @@ class Bus {
 
     fun getSnippet(): String {
 
+
+
+        var bortnumber = ""
+        if (!bus.bortName.isNullOrBlank()) bortnumber = "Борт: ${bus.bortName}\n\n"
+
+
         var typeString = when (bus.busType) {
             BusObject.BusType.Small -> "Автобус малого класса\n"
             BusObject.BusType.Medium -> "Автобус среднего класса\n"
@@ -57,37 +63,48 @@ class Bus {
             else -> ""
         }
 
-        if (bus.busType == BusObject.BusType.Big && bus.lowFloor) typeString="Низкопольный автобус большого класса\n"
-        if (bus.busType == BusObject.BusType.Medium && bus.lowFloor) typeString="Низкопольный автобус среднего класса\n"
-        if (bus.busType == BusObject.BusType.Small && bus.lowFloor) typeString="Низкопольный автобус малого класса\n"
+        if (bus.busType == BusObject.BusType.Big && bus.lowFloor) typeString =
+            "Низкопольный автобус большого класса\n"
+        if (bus.busType == BusObject.BusType.Medium && bus.lowFloor) typeString =
+            "Низкопольный автобус среднего класса\n"
+        if (bus.busType == BusObject.BusType.Small && bus.lowFloor) typeString =
+            "Низкопольный автобус малого класса\n"
+
+        if (bus.busType == BusObject.BusType.Trolleybus && bus.lowFloor) typeString =
+            "Низкопольный троллейбус\n"
 
 
-
-        val station = if (bus.nextStationName.isNullOrBlank()) "" else "Следующая остановка:\n\t${bus.nextStationName}\n\n"
+        val station =
+            if (bus.nextStationName.isNullOrBlank()) "" else "Следующая остановка:\n\t${bus.nextStationName}\n\n"
         val speed = "Скорость: ${bus.lastSpeed.toInt()} км/ч"
         var updateTime = ""
-        var gosnumber = ""
 
+
+        var gosnumber = ""
         if (!bus.licensePlate.isNullOrBlank()) gosnumber = "\nГосномер: ${bus.licensePlate}"
 
         if (bus.lastTime != null) {
 
             var difference = timeDifference
-            if (bus.lastTime!=null) {
-                val addidionalDifference = (Calendar.getInstance().timeInMillis - bus.lastTime!!.timeInMillis)/1000 - localServerTimeDifference
-                difference = addidionalDifference
+            if (bus.lastTime != null) {
+                val additionalDifference =
+                    (Calendar.getInstance().timeInMillis - bus.lastTime!!.timeInMillis) / 1000 - localServerTimeDifference
+                difference = additionalDifference
             }
 
 
             val date = bus.lastTime!!.time
             val format1 = SimpleDateFormat("HH:mm:ss", Locale("ru"))
-            val timeString = if (abs(difference) >=60*5) {
-                toPluralValue((difference/60).toInt(), "минуту", "минуты", "минут")
+            val timeString = if (abs(difference) >= 60 * 5) {
+                toPluralValue((difference / 60).toInt(), "минуту", "минуты", "минут")
             } else toPluralValue(difference, "секунду", "секунды", "секунд")
 
-            updateTime = "" + (if (difference < 0 || difference > 0) "\nОбновлено: $timeString назад (${format1.format(date)})" else "Обновлено: ${format1.format(date)}")
+            updateTime =
+                "" + (if (difference < 0 || difference > 0) "\nОбновлено: $timeString назад (${
+                    format1.format(date)
+                })" else "Обновлено: ${format1.format(date)}")
         }
-        return "$station$typeString$speed$gosnumber$updateTime"
+        return "$bortnumber$station$typeString$speed$gosnumber$updateTime"
     }
 
     fun getPosition(): LatLng {
