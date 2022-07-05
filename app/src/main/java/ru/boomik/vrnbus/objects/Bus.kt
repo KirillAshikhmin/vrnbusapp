@@ -49,8 +49,6 @@ class Bus {
 
     fun getSnippet(): String {
 
-
-
         var bortnumber = ""
         if (!bus.bortName.isNullOrBlank()) bortnumber = "Борт: ${bus.bortName}\n\n"
 
@@ -74,8 +72,8 @@ class Bus {
             "Низкопольный троллейбус\n"
 
 
-        val station =
-            if (bus.nextStationName.isNullOrBlank()) "" else "Следующая остановка:\n\t${bus.nextStationName}\n\n"
+        val station = if (bus.nextStationName.isNullOrBlank()) "" else "Следующая остановка:\n\t${bus.nextStationName}\n\n"
+        val hasConditioning = if (bus.hasConditioning) "Есть кондиционер\n" else ""
         val speed = "Скорость: ${bus.lastSpeed.toInt()} км/ч"
         var updateTime = ""
 
@@ -104,7 +102,7 @@ class Bus {
                     format1.format(date)
                 })" else "Обновлено: ${format1.format(date)}")
         }
-        return "$bortnumber$station$typeString$speed$gosnumber$updateTime"
+        return "$bortnumber$station$typeString$hasConditioning$speed$gosnumber$updateTime"
     }
 
     fun getPosition(): LatLng {

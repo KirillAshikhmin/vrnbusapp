@@ -25,6 +25,7 @@ import ru.boomik.vrnbus.objects.BusType
 import ru.boomik.vrnbus.utils.BusViewHolder
 import ru.boomik.vrnbus.utils.color
 import java.util.*
+import kotlin.random.Random
 
 class StationRoutesAdapter(private val context: Activity, BussList: List<Bus>) : BaseAdapter() {
 
@@ -39,6 +40,7 @@ class StationRoutesAdapter(private val context: Activity, BussList: List<Bus>) :
     val big: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_bus_large)!!
     val trolleybus: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_trolleybus)!!
     val wheelchair: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_wheelchair)!!
+    val ac: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_ac)!!
 
     init {
         favorites = SettingsManager.getStringArray(Consts.SETTINGS_FAVORITE_ROUTE)
@@ -54,6 +56,7 @@ class StationRoutesAdapter(private val context: Activity, BussList: List<Bus>) :
         big.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP)
         trolleybus.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP)
         wheelchair.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP)
+        ac.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP)
     }
 
     fun dataEquals(routes: String): Boolean {
@@ -101,6 +104,14 @@ class StationRoutesAdapter(private val context: Activity, BussList: List<Bus>) :
         } else {
             vh.ivLowFloor.setImageDrawable(null)
             vh.ivLowFloor.visibility = View.GONE
+        }
+
+        if (bus.bus.hasConditioning) {
+            vh.ivAc.setImageDrawable(ac)
+            vh.ivAc.visibility = View.VISIBLE
+        } else {
+            vh.ivAc.setImageDrawable(null)
+            vh.ivAc.visibility = View.GONE
         }
 
         val icon = when (bus.bus.busType) {

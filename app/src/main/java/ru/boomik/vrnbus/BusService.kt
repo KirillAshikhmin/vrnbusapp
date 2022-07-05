@@ -2,6 +2,7 @@ package ru.boomik.vrnbus
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import ru.boomik.vrnbus.dal.DataServices
 import ru.boomik.vrnbus.dal.businessObjects.BusObject
 import ru.boomik.vrnbus.dal.remote.RequestStatus
@@ -25,8 +26,8 @@ object BusService {
                 if (q == "*") {
                     routes.map { r -> r.id }.joinToString(",")
                 } else {
-                    val names = q.split(",")
-                    routes.filter { r -> names.contains(r.name) }.map { r -> r.id }.joinToString(",")
+                    val names = q.split(",").map { it.lowercase() }
+                    routes.filter { r -> names.contains(r.name.lowercase()) }.map { r -> r.id }.joinToString(",")
                 }
 
         val buses = DataServices.CoddDataService.getBusesForRoutes(query)
@@ -40,7 +41,6 @@ object BusService {
                 val station = stations.firstOrNull { it.id == busObject.id }
                 val routename = route?.name ?: ""
                 busObject.routeName = routename
-                if (routename.startsWith("Т")) busObject.busType = BusObject.BusType.Trolleybus
                 busObject.nextStationName = station?.title ?: ""
                 val bus = Bus()
                 bus.bus = busObject
@@ -62,6 +62,11 @@ object BusService {
             if (routeName.isBlank()) return null
             var route = if (DataManager.routesCalculated.containsKey(routeName)) DataManager.routesCalculated[routeName] else null
             if (route!=null) return route
+            var iteraction = 0
+            do {
+                delay(500)
+                iteraction++
+            } while (!DataManager.loaded && iteraction<60)
             val data = DataManager.routes?.firstOrNull { it.name == routeName }
             val tracks = DataManager.tracks
             val stations = DataManager.stations

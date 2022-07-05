@@ -16,22 +16,22 @@ public class AutoCompleteContainArrayAdapter extends ArrayAdapter<String> implem
 
     public AutoCompleteContainArrayAdapter(Context context, int resource, List<String> keys) {
         super(context, resource, keys);
-        allCodes=keys;
-        originalCodes=keys;
+        allCodes = keys;
+        originalCodes = keys;
     }
 
     public void setNewData(List<String> keys) {
-        allCodes=keys;
-        originalCodes=keys;
+        allCodes = keys;
+        originalCodes = keys;
         notifyDataSetChanged();
     }
 
     public int getCount() {
-        return allCodes==null ? 0 : allCodes.size();
+        return allCodes == null ? 0 : allCodes.size();
     }
 
     public String getItem(int position) {
-        return allCodes==null ? null : allCodes.get(position);
+        return allCodes == null ? null : allCodes.get(position);
     }
 
     public long getItemId(int position) {
@@ -41,18 +41,18 @@ public class AutoCompleteContainArrayAdapter extends ArrayAdapter<String> implem
     private class StringFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            if (constraint==null) return new FilterResults();
+            if (constraint == null) return new FilterResults();
             String filterString = constraint.toString().toLowerCase();
             FilterResults results = new FilterResults();
             final List<String> list = originalCodes;
 
             int count = list.size();
-            final ArrayList<String> nlist = new ArrayList<String>(count);
-            String filterableString ;
+            final ArrayList<String> nlist = new ArrayList<>(count);
+            String filterableString;
 
             for (int i = 0; i < count; i++) {
-                filterableString = list.get(i);
-                if (filterableString.toLowerCase().contains(filterString)) {
+                filterableString = list.get(i).toLowerCase();
+                if (filterableString.contains(filterString.toLowerCase())) {
                     nlist.add(filterableString);
                 }
             }
@@ -71,8 +71,7 @@ public class AutoCompleteContainArrayAdapter extends ArrayAdapter<String> implem
     }
 
     @Override
-    public Filter getFilter()
-    {
+    public Filter getFilter() {
         return new StringFilter();
     }
 }

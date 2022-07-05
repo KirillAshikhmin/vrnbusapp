@@ -71,7 +71,7 @@ public class ObjectOnlineDto {
     @SerializedName("lastStationId")
     val lastStationId: Int = 0
 
-    @SerializedName("lowfloor")
+    @SerializedName(value = "lowfloor", alternate = ["lowFloor"])
     val lowfloor: Boolean = false
 
     @SerializedName("bortName")

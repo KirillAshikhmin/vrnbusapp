@@ -2,6 +2,7 @@ package ru.boomik.vrnbus.managers
 
 import android.app.Activity
 import androidx.core.content.pm.PackageInfoCompat
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.ironz.binaryprefs.BinaryPreferencesBuilder
@@ -38,6 +39,12 @@ object SettingsManager {
         }
         DataBus.subscribe<Pair<String, Int>>(DataBus.Settings) {
             it.data.let { data -> if(data.second:: class == Int::class) mPreferences.edit().putInt(data.first, data.second).apply() }
+        }
+        DataBus.subscribe<Pair<String, Double>>(DataBus.Settings) {
+            it.data.let { data -> if(data.second:: class == Double::class) mPreferences.edit().putDouble(data.first, data.second).apply() }
+        }
+        DataBus.subscribe<Pair<String, Float>>(DataBus.Settings) {
+            it.data.let { data -> if(data.second:: class == Float::class) mPreferences.edit().putFloat(data.first, data.second).apply() }
         }
         DataBus.subscribe<Pair<String, String>>(DataBus.Settings) {
             it.data.let { data -> if(data.second:: class == String::class) mPreferences.edit().putString(data.first, data.second).apply() }
@@ -104,6 +111,13 @@ object SettingsManager {
         mPreferences.edit().putString(key, listOfStringToString(favorites)).apply()
     }
 
+
+    fun getLastLocation(): Pair<LatLng, Float> {
+        val lat = mPreferences.getDouble(Consts.SETTINGS_LAT, .0)
+        val lng = mPreferences.getDouble(Consts.SETTINGS_LNG, .0)
+        val zoom = mPreferences.getFloat(Consts.SETTINGS_LAST_ZOOM, 0f)
+        return Pair(LatLng(lat, lng), zoom)
+    }
 
     fun getBool(key : String) : Boolean {
         return mPreferences.getBoolean(key, false)

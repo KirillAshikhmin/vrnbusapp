@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/vrnbusapp/app/src/main/res/drawable/ic_bug.xml" value="0.14" />
+        <entry key="..\:/Projects/vrnbusapp/app/src/main/res/drawable/ic_bus_small_low_floor.xml" value="0.14" />
+        <entry key="..\:/Projects/vrnbusapp/app/src/main/res/drawable/ic_trolleybus_low_floor.xml" value="0.2985" />
         <entry key="..\:/Projects/vrnbusapp/app/src/main/res/layout/activity_main.xml" value="0.11666666666666667" />
         <entry key="..\:/Projects/vrnbusapp/app/src/main/res/layout/activity_maps.xml" value="0.11666666666666667" />
+        <entry key="..\:/Projects/vrnbusapp/app/src/main/res/layout/bus_cell.xml" value="0.5" />
       </map>
     </option>
   </component>

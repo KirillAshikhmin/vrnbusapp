@@ -60,6 +60,7 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
     private var middleFloor: Drawable?
     private var smallFloor: Drawable?
     private var trolleybus: Drawable?
+    private var trolleybusFloor: Drawable?
 
     init {
         MapsInitializer.initialize(activity.applicationContext)
@@ -85,6 +86,7 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
         middleFloor = ContextCompat.getDrawable(mActivity, R.drawable.ic_bus_middle_low_floor)
         smallFloor = ContextCompat.getDrawable(mActivity, R.drawable.ic_bus_small_low_floor)
         trolleybus = ContextCompat.getDrawable(mActivity, R.drawable.ic_trolleybus)
+        trolleybusFloor = ContextCompat.getDrawable(mActivity, R.drawable.ic_trolleybus_low_floor)
     }
 
 
@@ -212,23 +214,32 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
         if (initPos != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initPos, initZoom))
             checkZoom()
-        } else if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.isMyLocationEnabled = true
-            fusedLocationClient.lastLocation.continueWith {
-                val location = it.result
-                if (location != null && it.isSuccessful) {
-                    val latLng = LatLng(location.latitude, location.longitude)
-                    val distance = distanceBetween(latLng, LatLng(51.673909, 39.207646))
-                    if (distance < 20000)
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+        } else {
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mMap.isMyLocationEnabled = true
+                fusedLocationClient.lastLocation.continueWith {
+                    val location = it.result
+                    if (location != null && it.isSuccessful) {
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        val distance = distanceBetween(latLng, LatLng(51.673909, 39.207646))
+                        if (distance < 20000)
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                    } else goToLastLocation()
                 }
-            }
+            } else goToLastLocation()
         }
         try {
             mActivity.reportFullyDrawn()
         } catch (e: Throwable) {
         }
         initPosition = null
+    }
+
+    private fun goToLastLocation() {
+        val loc = SettingsManager.getLastLocation()
+        if (loc.first.latitude==.0 && loc.first.longitude==.0) return
+        val zoom = if (loc.second>0) loc.second else 16f
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc.first, zoom))
     }
 
     private fun distanceBetween(latLng1: LatLng, latLng2: LatLng): Float {
@@ -316,6 +327,7 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
             if (it.bus.busType == BusObject.BusType.Big && it.bus.lowFloor) typeIcon = bigFloor
             if (it.bus.busType == BusObject.BusType.Medium && it.bus.lowFloor) typeIcon = middleFloor
             if (it.bus.busType == BusObject.BusType.Small && it.bus.lowFloor) typeIcon = smallFloor
+            if (it.bus.busType == BusObject.BusType.Trolleybus && it.bus.lowFloor) typeIcon = trolleybusFloor
 
             val color = when (it.bus.busType) {
                 BusObject.BusType.Small -> Consts.COLOR_BUS_SMALL
@@ -328,7 +340,6 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
                 val route = DataManager.routes?.firstOrNull { r -> r.id == it.bus.routeId }
                 if (route != null) {
                     it.bus.routeName = route.name
-                    if (route.name.startsWith("Т")) it.bus.busType = BusObject.BusType.Trolleybus
 
                     if (it.bus.nextStationName.isNullOrEmpty()) {
                         var forward = true
@@ -488,7 +499,6 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
         mRouteOnMap = null
     }
 
-
     private fun getRoute(stations: List<StationOnMap>?, @ColorRes color: Int): PolylineOptions? {
         if (stations.isNullOrEmpty()) return null
         val line = PolylineOptions()
@@ -588,5 +598,13 @@ class MapManager(activity: Activity, mapFragment: SupportMapFragment) : OnMapRea
         if (station.lat <= 0) return
         val latLng = LatLng(station.lat - 0.0006, station.lon)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+    }
+
+    fun getLastLocation(): Pair<LatLng, Float> {
+        return if (::mMap.isInitialized)
+            Pair(mMap.cameraPosition.target, mMap.cameraPosition.zoom)
+        else Pair(LatLng(.0,.0), 0f)
+
+
     }
 }

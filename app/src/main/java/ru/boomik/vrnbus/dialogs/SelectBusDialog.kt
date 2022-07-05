@@ -9,7 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import androidx.core.view.WindowInsetsCompat
@@ -32,7 +35,12 @@ import ru.boomik.vrnbus.managers.SettingsManager
 class SelectBusDialog {
 
     companion object {
-        fun show(activity: Activity, mRoutes: String, mInsets: WindowInsetsCompat, selected: (String) -> Unit) {
+        fun show(
+            activity: Activity,
+            mRoutes: String,
+            mInsets: WindowInsetsCompat,
+            selected: (String) -> Unit
+        ) {
 
             val routesList = DataManager.routeNames
             if (routesList == null) {
@@ -42,20 +50,28 @@ class SelectBusDialog {
 
             val decorView = activity.window.decorView as FrameLayout
 
-            AsyncLayoutInflater(activity).inflate(R.layout.select_bus_dialog, decorView) { view, _, _ ->
-                val dialogView = view  as LinearLayout
+            AsyncLayoutInflater(activity).inflate(
+                R.layout.select_bus_dialog,
+                decorView
+            ) { view, _, _ ->
+                val dialogView = view as LinearLayout
                 dialogView.tag = "dialog"
                 val paramsFirst = dialogView.layoutParams as ViewGroup.MarginLayoutParams
                 val params = dialogView.layoutParams as ViewGroup.MarginLayoutParams
-                val paramsLast = dialogView.getChildAt(dialogView.childCount - 1).layoutParams as ViewGroup.MarginLayoutParams
+                val paramsLast =
+                    dialogView.getChildAt(dialogView.childCount - 1).layoutParams as ViewGroup.MarginLayoutParams
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     paramsFirst.topMargin += mInsets.systemWindowInsetTop
                     params.leftMargin += mInsets.systemWindowInsetLeft
                     params.rightMargin += mInsets.systemWindowInsetRight
-                    paramsLast.bottomMargin = activity.resources.getDimension(R.dimen.activity_vertical_margin).toInt() + mInsets.systemWindowInsetBottom
+                    paramsLast.bottomMargin =
+                        activity.resources.getDimension(R.dimen.activity_vertical_margin)
+                            .toInt() + mInsets.systemWindowInsetBottom
                 } else {
-                    paramsFirst.topMargin += activity.resources.getDimension(R.dimen.activity_vertical_margin).toInt()
-                    paramsLast.bottomMargin += activity.resources.getDimension(R.dimen.activity_vertical_margin).toInt()
+                    paramsFirst.topMargin += activity.resources.getDimension(R.dimen.activity_vertical_margin)
+                        .toInt()
+                    paramsLast.bottomMargin += activity.resources.getDimension(R.dimen.activity_vertical_margin)
+                        .toInt()
                 }
                 dialogView.setOnClickListener {
                     decorView.removeView(dialogView)
@@ -118,10 +134,12 @@ class SelectBusDialog {
                 favesButton.add(dialogView.findViewById(R.id.fave_four))
                 favesButton.add(dialogView.findViewById(R.id.fave_five))
 
-                val faveClick = View.OnClickListener { v -> if (v!=null) {
-                    hide(activity)
-                    FaveManager.faveClick(v.tag as String)
-                }}
+                val faveClick = View.OnClickListener { v ->
+                    if (v != null) {
+                        hide(activity)
+                        FaveManager.faveClick(v.tag as String)
+                    }
+                }
                 val faveLongClick = View.OnLongClickListener {
                     hide(activity)
                     return@OnLongClickListener FaveManager.faveLongClick(it.tag as String)
@@ -132,8 +150,11 @@ class SelectBusDialog {
                 }
 
 
-
-                val nachosAdapter = AutoCompleteContainArrayAdapter(activity, R.layout.bus_complete_view, routesList)
+                val nachosAdapter = AutoCompleteContainArrayAdapter(
+                    activity,
+                    R.layout.bus_complete_view,
+                    routesList
+                )
                 val nachos = dialogView.findViewById<NachoTextView>(R.id.nachoRoutes)
                 nachos.setAdapter(nachosAdapter)
                 nachos.addChipTerminator(',', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL)
@@ -141,7 +162,8 @@ class SelectBusDialog {
                 nachos.addChipTerminator(';', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL)
                 nachos.enableEditChipOnTouch(false, true)
                 if (mRoutes.isNotEmpty()) {
-                    val routes = mRoutes.split(',').asSequence().distinct().map { it.trim() }.toList()
+                    val routes =
+                        mRoutes.split(',').asSequence().distinct().map { it.trim() }.toList()
                     nachos.setText(routes)
                 }
 
@@ -153,8 +175,12 @@ class SelectBusDialog {
                 nachos.setRawInputType(InputType.TYPE_CLASS_TEXT)
                 nachos.chipifyAllUnterminatedTokens()
 
-                val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(nachos.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+                val imm =
+                    activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(
+                    nachos.windowToken,
+                    InputMethodManager.HIDE_IMPLICIT_ONLY
+                )
 
                 nachos.setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -189,7 +215,11 @@ class SelectBusDialog {
                     val favorites = SettingsManager.getStringArray(Consts.SETTINGS_FAVORITE_ROUTE)
 
                     if (favorites == null || favorites.count() == 0) {
-                        Toast.makeText(activity, "Нет избранных маршрутов. Для добавления нажмите на звездочку у нужного маршрута", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            activity,
+                            "Нет избранных маршрутов. Для добавления нажмите на звездочку у нужного маршрута",
+                            Toast.LENGTH_LONG
+                        ).show()
                         return@setOnClickListener
                     }
                     val routes = favorites.asSequence().distinct().joinToString(",")
@@ -201,8 +231,13 @@ class SelectBusDialog {
 
                 val selectedRoutes = nachos.chipValues.asSequence().distinct().toList()
                 var favorites = SettingsManager.getStringArray(Consts.SETTINGS_FAVORITE_ROUTE)
-                if (favorites==null) favorites = listOf()
-                val routesAdapter = RoutesAdapter(activity, routesList.sortedByDescending { r -> favorites.contains(r) }, selectedRoutes, favorites)
+                if (favorites == null) favorites = listOf()
+                val routesAdapter = RoutesAdapter(
+                    activity,
+                    routesList.sortedByDescending { r -> favorites.contains(r) },
+                    selectedRoutes,
+                    favorites
+                )
 
                 val routesRecycler = dialogView.findViewById<RecyclerView>(R.id.routesList)
                 routesRecycler.layoutManager = LinearLayoutManager(activity)
@@ -210,7 +245,8 @@ class SelectBusDialog {
                 routesRecycler.setHasFixedSize(true)
 
                 DataBus.subscribe<Pair<String, Boolean>>(DataBus.FavoriteRoute) { _ ->
-                    routesAdapter.favorites =  SettingsManager.getStringArray(Consts.SETTINGS_FAVORITE_ROUTE) ?: listOf()
+                    routesAdapter.favorites =
+                        SettingsManager.getStringArray(Consts.SETTINGS_FAVORITE_ROUTE) ?: listOf()
                     routesAdapter.notifyDataSetChanged()
                 }
 
@@ -222,7 +258,7 @@ class SelectBusDialog {
                 nachos.setOnChipAddListener {
                     val text = nachos.chipValues
                     val nachosText = getNachos(nachos, routesList)
-                    if (text.count()!=nachosText.count())
+                    if (text.count() != nachosText.count())
                         nachos.post {
                             nachos.setText(nachosText)
                         }
@@ -262,21 +298,28 @@ class SelectBusDialog {
             }
         }
 
-        private fun selectRoutes(nachos: NachoTextView, routesList: List<String>, selected: (String) -> Unit) {
+        private fun selectRoutes(
+            nachos: NachoTextView,
+            routesList: List<String>,
+            selected: (String) -> Unit
+        ) {
             selected(getNachos(nachos, routesList).joinToString(","))
             nachos.clearFocus()
         }
 
         private fun getNachos(nachos: NachoTextView, routesList: List<String>): List<String> {
             nachos.chipifyAllUnterminatedTokens()
-            val routes = nachos.chipValues.asSequence().distinct().toMutableList()
-            return routes.filter { routesList.contains(it) }.toList()
+            val routes =
+                nachos.chipValues.asSequence().distinct().toList().map { it.lowercase() }
+            return routesList.filter { route -> routes.contains(route.lowercase())}.toList()
         }
 
         private fun updateSelectedInAdapter(adapter: RoutesAdapter, nachos: NachoTextView) {
             nachos.post {
                 val selectedRoutes = nachos.chipValues.asSequence().distinct().toList()
-                if (selectedRoutes.toTypedArray().contentEquals(adapter.selected.toTypedArray())) return@post
+                if (selectedRoutes.toTypedArray()
+                        .contentEquals(adapter.selected.toTypedArray())
+                ) return@post
                 adapter.selected = selectedRoutes
                 adapter.notifyDataSetChanged()
             }

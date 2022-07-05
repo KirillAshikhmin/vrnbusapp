@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/vrnbusapp.iml" filepath="$PROJECT_DIR$/.idea/vrnbusapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vrnbusapp.iml" filepath="$PROJECT_DIR$/.idea/modules/vrnbusapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.iml" filepath="$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.main.iml" filepath="$PROJECT_DIR$/.idea/modules/DAL/vrnbusapp.DAL.main.iml" />

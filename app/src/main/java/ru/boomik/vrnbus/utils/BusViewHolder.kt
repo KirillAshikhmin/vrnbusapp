@@ -13,12 +13,13 @@ class BusViewHolder(view: View?) {
     val btnFavorite: ImageButton = view?.findViewById(R.id.favorite) as ImageButton
     val ivLowFloor: ImageView = view?.findViewById(R.id.low_floor) as ImageView
     val ivBusType: ImageView = view?.findViewById(R.id.bus_type) as ImageView
+    val ivAc: ImageView = view?.findViewById(R.id.ac) as ImageView
 
   init {
      // TextViewCompat.setAutoSizeTextTypeWithDefaults(tvTitle, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
        ivLowFloor.setOnClickListener { Toast.makeText(ivLowFloor.context, R.string.low_floor, Toast.LENGTH_SHORT).show() }
         ivBusType.setOnClickListener {
-            val type: BusType? = ivBusType.tag as? BusType ?: return@setOnClickListener
+            val type: BusType = ivBusType.tag as? BusType ?: return@setOnClickListener
             val stringRes = when (type) {
                 BusType.Big -> R.string.big_capacity
                 BusType.BigLowFloor -> R.string.big_capacity

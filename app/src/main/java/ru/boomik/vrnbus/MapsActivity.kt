@@ -231,8 +231,6 @@ class MapsActivity : AppCompatActivity() {
 
 
     private fun onReady() {
-        showSettingsSnackbar()
-        //faveDialog(this)
         val ratingDialog = RatingDialog.Builder(this)
                 .threshold(4f)
                 .session(7)
@@ -248,16 +246,6 @@ class MapsActivity : AppCompatActivity() {
         ratingDialog.show()
     }
 
-    private fun showSettingsSnackbar() : Boolean{
-        if (SettingsManager.getBool("settingsSnackShowed")) return false
-        val snack = Snackbar.make(mActivityView, "Загляните в настройки, там интересно", Snackbar.LENGTH_LONG).setAction("Открыть") {
-            menuManager.openSettings()
-            SettingsManager.setBool("settingsSnackShowed", true)
-        }
-
-        displaySnackBarWithBottomMargin(snack, mInsets.systemWindowInsetLeft, mInsets.systemWindowInsetRight, mInsets.systemWindowInsetBottom)
-        return true
-    }
 
 
     private fun displaySnackBarWithBottomMargin(snackbar: Snackbar, leftMargin: Int, rightMargin: Int, marginBottom: Int) {
@@ -355,7 +343,9 @@ class MapsActivity : AppCompatActivity() {
         scope.launch {
             var dialog: AlertDialog? = null
             try {
-                dialog = progressDialog(this@MapsActivity)
+                dialog = try {
+                   progressDialog(this@MapsActivity)
+                } catch (t: Throwable) {null}
 
                 DataManager.loadData(scope)
 
@@ -395,8 +385,12 @@ class MapsActivity : AppCompatActivity() {
 
 
     override fun onPause() {
-        super.onPause()
         mActive = false
+        val position = mapManager.getLastLocation()
+        DataBus.sendEvent(DataBus.Settings, Pair(Consts.SETTINGS_LAT, position.first.latitude))
+        DataBus.sendEvent(DataBus.Settings, Pair(Consts.SETTINGS_LNG, position.first.longitude))
+        DataBus.sendEvent(DataBus.Settings, Pair(Consts.SETTINGS_LAST_ZOOM, position.second))
+        super.onPause()
         // mapManager.pause()
     }
 

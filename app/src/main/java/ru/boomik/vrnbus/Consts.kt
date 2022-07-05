@@ -15,6 +15,10 @@ object Consts{
     const val SETTINGS_ROTATE = "rotateMap"
     const val SETTINGS_CACHE = "cache"
 
+    const val SETTINGS_LAT = "lat"
+    const val SETTINGS_LNG = "lng"
+    const val SETTINGS_LAST_ZOOM = "zoom"
+
     const val LOCATION_PERMISSION_REQUEST = 10
 
     const val TILES_URL_A="http://a.tile.openstreetmap.org/{z}/{x}/{y}.png"

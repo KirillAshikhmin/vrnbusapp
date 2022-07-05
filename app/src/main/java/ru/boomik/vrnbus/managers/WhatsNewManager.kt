@@ -22,6 +22,7 @@ fun showWhatsNew(activity: AppCompatActivity, insets: WindowInsetsCompat) : Bool
                 }
 
         val whatsNew = when {
+            nowVersionCode >= 40 -> showWhatsNewFor40(activity)
             nowVersionCode >= 32 -> showWhatsNewFor32(activity)
             nowVersionCode >= 18 -> showWhatsNewFor18(activity)
             nowVersionCode >= 16 -> showWhatsNewFor16(activity)
@@ -53,6 +54,15 @@ fun showWhatsNew(activity: AppCompatActivity, insets: WindowInsetsCompat) : Bool
 }
 
 
+private fun showWhatsNewFor40(activity: AppCompatActivity): WhatsNew {
+    return WhatsNew.newInstance(
+            itemFromRes(R.string.ac_title, R.string.ac_desc, R.drawable.ic_ac, activity),
+            itemFromRes(R.string.bort_title, R.string.bort_desc, R.drawable.ic_123, activity),
+            itemFromRes(R.string.improves_40_title, R.string.improves_40_desc, R.drawable.ic_improve, activity),
+            itemFromRes(R.string.fixes_40_title, R.string.fixes_40_desc, R.drawable.ic_bug, activity),
+            itemFromRes(R.string.other_title, R.string.other_desc, R.drawable.ic_optimization, activity)
+    )
+}
 private fun showWhatsNewFor32(activity: AppCompatActivity): WhatsNew {
     return WhatsNew.newInstance(
             itemFromRes(R.string.station_list_title, R.string.station_list_desc, R.drawable.ic_bus_station, activity),
